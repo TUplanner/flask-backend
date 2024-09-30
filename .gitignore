@@ -1,0 +1,41 @@
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Flask specific
+instance/
+.webassets-cache
+
+# IDE specific files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+
+# SQLite database files
+*.sqlite3
+*.db
+
+# Configuration files
+*.env
+
+# macOS specific files
+.DS_Store
+
+# Windows specific files
+Thumbs.db
