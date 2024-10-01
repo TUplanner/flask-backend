@@ -4,18 +4,6 @@ from bs4 import BeautifulSoup
 
 
 def get_academic_programs() -> list:
-    """
-    Fetches a list of academic programs from Temple University's bulletin page.
-
-    This function sends a request to the academic programs page, parses the HTML content,
-    and extracts program names, degrees, and corresponding links. The results are returned
-    as a list of dictionaries containing program names and their associated links.
-
-    Returns:
-        list: A list of dictionaries, where each dictionary contains:
-            - 'program': The name of the academic program.
-            - 'link': The URL link for the academic program.
-    """
     program_list = []
 
     try:
