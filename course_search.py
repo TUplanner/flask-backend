@@ -10,14 +10,14 @@ def auth_session(txt_term):
 
 
 def course_search(
-    txt_term,
+    txt_term, 
     txt_subject=None,
     txt_courseNumber=None,
-    txt_course_number_range=None,
-    txt_course_number_range_to=None,
-    txt_keywordall=None,
+    #txt_course_number_range=None,
+    #txt_course_number_range_to=None,
+    #txt_keywordall=None,
     txt_campus=None,
-    txt_college=None,
+    #txt_college=None,
     txt_instructionalMethod=None,
     txt_attribute=None,
     txt_instructor=None,

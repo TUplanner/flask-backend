@@ -1,41 +1,45 @@
-from flask import Flask, jsonify, request
-from course_requests import get_request
-from rmp_requests import get_professor
-from temple_requests import get_academic_programs, get_curriculum
+from flask import Flask, jsonify, make_response, request
+from flask_cors import CORS
+import requests
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True, origins=["https://tuplanner-v12.vercel.app/"])
 
 
-@app.route("/")
-def home():
-    return "Connected"
+@app.route("/proxy/session", methods=["POST"])
+def auth_session():
+    response = requests.post(
+        "https://prd-xereg.temple.edu/StudentRegistrationSsb/ssb/term/search?mode=search",
+        data={"term": 202436},
+    )
+
+    cookies = response.cookies
+
+    flask_response = make_response(jsonify({"message": "Session authenticated"}), 200)
+
+    # Set the cookies in the Flask response
+    for cookie_name, cookie_value in cookies.items():
+        flask_response.set_cookie(
+            cookie_name,
+            cookie_value,
+            samesite="None",
+            secure=True,
+        )
+
+    return flask_response
 
 
-@app.route("/academic-programs")
-def get_academic_programs_wrapper():
-    data = get_academic_programs()
-    return jsonify(data)
+@app.route("/testing")
+def testing():
+    cookies = request.cookies
+
+    external_response = requests.get(
+        "https://prd-xereg.temple.edu/StudentRegistrationSsb/ssb/searchResults/searchResults?txt_term=202503&startDatepicker=&endDatepicker=&pageOffset=0&pageMaxSize=10&sortColumn=subjectDescription&sortDirection=asc",
+        cookies=cookies,
+    )
+
+    return jsonify(external_response.json()), 200
 
 
-@app.route("/curriculum/<path:url>")
-def get_curriculum_wrapper(url):
-    data = get_curriculum(url)
-    return jsonify(data)
-
-
-@app.route("/classSearch/<path:endpoint>")
-def get_request_wrapper(endpoint):
-    data = get_request(endpoint)
-    return jsonify(data)
-
-
-@app.route("/rmp/getProfessor")
-def get_professor_wrapper():
-    professor_name = request.args.get("searchProfessor")
-    if professor_name:
-        return jsonify(get_professor(professor_name))
-    return ["Add proffesor name"]
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)

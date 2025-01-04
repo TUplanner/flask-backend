@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 
 def get_academic_programs() -> list:
-    program_list = []
+    program_list = set()
 
     try:
         response = requests.get("https://bulletin.temple.edu/academic-programs/")
@@ -25,15 +25,22 @@ def get_academic_programs() -> list:
                     links = [a["href"] for a in column.find_all("a")]
 
                     for degree, link in zip(degrees, links):
-                        program = re.sub(r"\s+", " ", f"{program_name} {degree}")
+                        # Find the first opening parenthesis '(' and remove everything after it, including the parenthesis
+                        program_name2 = program_name.split("(", 1)[0]
+                        program_name3 = program_name2.strip()
+
+                        degree2 = degree.split("(", 1)[0]
+                        degree3 = degree2.strip()
+
+                        program = re.sub(r"\s+", " ", f"{program_name3} {degree3}")
 
                         if link:
-                            program_list.append({"program": program, "link": link})
+                            program_list.add((program, link))
 
     except requests.RequestException as e:
         print(f"Error fetching data: {e}")
 
-    return program_list
+    return dict(program_list)
 
 
 def get_curriculum(program_url: str) -> list:
