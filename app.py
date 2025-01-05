@@ -3,7 +3,7 @@ from flask_cors import CORS
 import requests
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=["https://tuplanner-v12.vercel.app/"])
+CORS(app, supports_credentials=True, origins=["https://tuplanner-v12.vercel.app"])
 
 
 @app.route("/proxy/session", methods=["POST"])
