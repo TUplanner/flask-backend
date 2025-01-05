@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, make_response, request
+from flask import Flask, jsonify, make_response, request, Response
 from flask_cors import CORS
 import requests
 
@@ -13,18 +13,20 @@ def auth_session():
         data={"term": 202436},
     )
 
-    cookies = response.cookies
+    flask_response = make_response(response.text, response.status_code)
 
-    flask_response = make_response(jsonify({"message": "Session authenticated"}), 200)
-
-    # Set the cookies in the Flask response
-    for cookie_name, cookie_value in cookies.items():
+    for cookie_name, cookie_value in response.cookies.items():
         flask_response.set_cookie(
             cookie_name,
             cookie_value,
             samesite="None",
             secure=True,
         )
+
+    for header, value in response.headers.items():
+
+        if header.lower() not in ["content-length", "transfer-encoding"]:
+            flask_response.headers[header] = value
 
     return flask_response
 
@@ -38,7 +40,24 @@ def testing():
         cookies=cookies,
     )
 
-    return jsonify(external_response.json()), 200
+    flask_response = Response(
+        external_response.content, status=external_response.status_code
+    )
+
+    for cookie_name, cookie_value in external_response.cookies.items():
+        flask_response.set_cookie(
+            cookie_name,
+            cookie_value,
+            samesite="None",
+            secure=True,
+        )
+
+    for header, value in external_response.headers.items():
+
+        if header.lower() not in ["content-length", "transfer-encoding"]:
+            flask_response.headers[header] = value
+
+    return flask_response
 
 
 # if __name__ == "__main__":
