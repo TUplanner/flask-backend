@@ -44,19 +44,6 @@ def testing():
         external_response.content, status=external_response.status_code
     )
 
-    for cookie_name, cookie_value in external_response.cookies.items():
-        flask_response.set_cookie(
-            cookie_name,
-            cookie_value,
-            samesite="None",
-            secure=True,
-        )
-
-    for header, value in external_response.headers.items():
-
-        if header.lower() not in ["content-length", "transfer-encoding"]:
-            flask_response.headers[header] = value
-
     return flask_response
 
 
